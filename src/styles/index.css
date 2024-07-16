@@ -1,0 +1,40 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+}
+
+body{
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.welcome-message, .login-prompt{
+  font-size: 2.5rem;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 0;
+}
+
+.welcome-message{
+  background-color: rgb(46, 129, 46);
+}
+
+.login-prompt{
+  background-color: rgb(174, 53, 53);
+}
+
+h1{
+  display: inline-block;
+}
+
