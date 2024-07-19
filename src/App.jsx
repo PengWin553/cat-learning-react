@@ -13,24 +13,21 @@ function App() {
     setB(Number(e.target.value));
   };
 
-  const handleOperation = (operator) => {
-    switch (operator) {
-      case '+':
-        setResult(a + b);
-        break;
-      case '-':
-        setResult(a - b);
-        break;
-      case '*':
-        setResult(a * b);
-        break;
-      case '/':
-        setResult(a / b);
-        break;
-      default:
-        break;
-    }
-  };
+  function Addition(){
+    setResult(a + b);
+  }
+
+  function Subtraction(){
+    setResult(a - b);
+  }
+
+  function Multiplication(){
+    setResult(a * b);
+  }
+
+  function Division(){
+    setResult(a / b);
+  }
 
   return (
     <>
@@ -64,10 +61,10 @@ function App() {
 
         {/* buttons */}
         <div className="buttons-container">
-          <button className="btn plus" onClick={() => handleOperation('+')}>+</button>
-          <button className="btn minus" onClick={() => handleOperation('-')}>-</button>
-          <button className="btn times" onClick={() => handleOperation('*')}>*</button>
-          <button className="btn divide" onClick={() => handleOperation('/')}>/</button>
+          <button className="btn plus" onClick={Addition}>+</button>
+          <button className="btn minus" onClick={Subtraction}>-</button>
+          <button className="btn times" onClick={Multiplication}>*</button>
+          <button className="btn divide" onClick={Division}>/</button>
         </div>
 
       </div>
