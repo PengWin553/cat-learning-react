@@ -1,35 +1,26 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// on button click, the h1 element's value must change to a new value (from default to new, from new to default); the color of the button must change (from default to new, from new to default)
+import { useState } from "react";
+import "./App.css";
+const App = () => {
+  const [text, setText] = useState('sdf');
+  const [buttonStyle, setButtonStyle] = useState('btn-click');
 
-function App() {
-  const [count, setCount] = useState(0)
+  const ChangeText = () => {
+    setText(text === 'sdf' ? 'Pengwin' : 'sdf');
+  }
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+  const ChangeButtonStyle = () => {
+    setButtonStyle(buttonStyle === 'btn-click' ? 'btn-click-active' : 'btn-click');
+  }
+   
+  return ( 
+      <div className="parent">
+          <h1>{text}</h1>
+          <div className={buttonStyle} onClick={() => {ChangeText(), ChangeButtonStyle()}}>
+              Click
+          </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  );
 }
-
-export default App
+ 
+export default App;
