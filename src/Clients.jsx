@@ -6,7 +6,8 @@ const Clients = () => {
 
   const getClients = async () => {
     const response = await fetch(
-      "http://localhost:5029/api/ClientApi/GetClients"
+      // replace with local url of the api in the pc you're using. Run the project containing the API first before executing this reactjs project
+      "http://localhost:5172/api/ClientApi/GetClients"
     );
 
     const result = await response.json()
