@@ -10,6 +10,7 @@ const Clients = () => {
     const makeAddModalAppear = () => setShowAddModal(!showAddModal);
 
     const [clientName, setClientName] = useState("");
+    const [residency, setResidency] = useState("");
 
     const getClients = async () => {
         const response = await fetch(
@@ -23,7 +24,7 @@ const Clients = () => {
     const saveClient = async () => {
         const dataToSend = {
             "clientName": clientName,
-            "residency": "quite place"
+            "residency": residency
         }
 
         const response = await fetch(
@@ -38,11 +39,9 @@ const Clients = () => {
         );
         getClients();
         makeAddModalAppear();
-
     }
 
     const DeleteClient = async (id) => {
-
         const response = await fetch(
             "http://localhost:5029/api/ClientApi/DeleteClient?Id="+id,
             {
@@ -50,8 +49,6 @@ const Clients = () => {
             }
         );
         getClients();
-        
-
     }
 
     useEffect(() => {
@@ -67,16 +64,23 @@ const Clients = () => {
                     new client info
                 </Modal.Header>
                 <Modal.Body>
+                    <label htmlFor="name">Name:</label>
                     <input type="text"
                         value={clientName}
                         onChange={(e) => setClientName(e.target.value)}
+                        id="name"
+                    />
+
+                    <label htmlFor="residency">Residency:</label>
+                    <input type="text"
+                        value={residency}
+                        onChange={(e) => setResidency(e.target.value)}
                     />
                 </Modal.Body>
                 <Modal.Footer>
                     <Button onClick={saveClient}>Save client</Button>
                 </Modal.Footer>
             </Modal>
-
 
             <div className="container mt-5">
                 <Button
