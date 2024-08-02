@@ -3,7 +3,6 @@ import { Button, Modal } from 'react-bootstrap';
 
 const Clients = () => {
     const [clients, setClients] = useState([]); // Corrected variable name
-    const [client, setClient] = useState([]); // Corrected variable name
     const [loading, setLoading] = useState(true);
 
     const [showAddModal, setShowAddModal] = useState(false); //the close AddModal
@@ -29,21 +28,6 @@ const Clients = () => {
         setLoading(false);
     }
 
-    // Fetch Client
-    const getClient = async (id) => {
-        const response = await fetch(
-            "http://localhost:5029/api/ClientApi/GetClient?id="+id,
-        );
-        const result = await response.json();
-        setClient(result);
-        console.log(result);
-        setLoading(false);
-
-        setClientIdUpdate(result.id);
-        setClientNameUpdate(result.clientName);
-        setResidencyUpdate(result.residency);
-    }
-
     // Add Client
     const saveClient = async () => {
         const dataToSend = {
@@ -66,6 +50,12 @@ const Clients = () => {
         getClients();
         makeAddModalAppear();
     }
+
+    const handleToUpdate = (id, clientName, residency) => {
+        setClientIdUpdate(id);
+        setClientNameUpdate(clientName);
+        setResidencyUpdate(residency);
+    };
 
     // Update Client
     const updateClient = async () => { // Changed function name to lowercase
@@ -177,7 +167,7 @@ const Clients = () => {
                         clients.map((c) =>
                             <li key={c.id} >{c.clientName} || {c.residency}
                                 <Button onClick={() => deleteClient(c.id)}>Delete</Button>
-                                <Button onClick={() => {getClient(c.id); makeUpdateModalAppear()}}>Update</Button>
+                                <Button onClick={() => { handleToUpdate(c.id, c.clientName, c.residency); makeUpdateModalAppear(); }}>Update</Button>
                             </li>
                         )
                     }
