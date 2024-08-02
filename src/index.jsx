@@ -2,22 +2,25 @@ import { useState, useEffect } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 
 const Clients = () => {
-    const [clients, setClients] = useState([]); // Corrected variable name
-    const [client, setClient] = useState([]); // Corrected variable name
+
+    // get Clients to display
+    const [clients, setClients] = useState([]); 
+
+    // set loading...
     const [loading, setLoading] = useState(true);
 
-    const [showAddModal, setShowAddModal] = useState(false); //the close AddModal
-    const makeAddModalAppear = () => setShowAddModal(!showAddModal); //to open AddModal
+    // Handle individual variables
+    const [id, setId] = useState("");
+    const [clientName, setClientName] = useState(""); 
+    const [residency, setResidency] = useState("");
 
-    const [showUpdateModal, setShowUpdateModal] = useState(false); //the close UpdateModal
-    const makeUpdateModalAppear = () => setShowUpdateModal(!showUpdateModal); //to open UpdateModal
+    // Add Modal
+    const [showAddModal, setShowAddModal] = useState(false); 
+    const makeAddModalAppear = () => setShowAddModal(!showAddModal); 
 
-    const [clientName, setClientName] = useState(""); //for AddClientName
-    const [residency, setResidency] = useState(""); //for AddClientResidency
-
-    const [clientNameUpdate, setClientNameUpdate] = useState(""); //for updateClientNmae
-    const [residencyUpdate, setResidencyUpdate] = useState(""); //for UpdateClientResidency
-    const [clientIdUpdate, setClientIdUpdate] = useState(""); //for UpdateClientResidency
+    // Update Modal
+    const [showUpdateModal, setShowUpdateModal] = useState(false); 
+    const makeUpdateModalAppear = () => setShowUpdateModal(!showUpdateModal); 
 
     // Fetch Clients
     const getClients = async () => {
@@ -34,14 +37,13 @@ const Clients = () => {
         const response = await fetch(
             "http://localhost:5029/api/ClientApi/GetClient?id="+id,
         );
-        const result = await response.json();
-        setClient(result);
-        console.log(result);
-        setLoading(false);
 
-        setClientIdUpdate(result.id);
-        setClientNameUpdate(result.clientName);
-        setResidencyUpdate(result.residency);
+        const result = await response.json();
+        setId(result.id);
+        setClientName(result.clientName);
+        setResidency(result.residency);
+
+        setLoading(false);
     }
 
     // Add Client
@@ -58,11 +60,14 @@ const Clients = () => {
                 headers: {
                     "Content-Type": "application/json"
                 },
+
                 body: JSON.stringify(dataToSend)
             }
         );
+
         setClientName('');
         setResidency('');
+
         getClients();
         makeAddModalAppear();
     }
@@ -70,23 +75,25 @@ const Clients = () => {
     // Update Client
     const updateClient = async () => { // Changed function name to lowercase
         const dataToSend = {
-            "clientName": clientNameUpdate,
-            "residency": residencyUpdate,
+            "clientName": clientName,
+            "residency": residency,
         }
 
         const response = await fetch(
-            "http://localhost:5029/api/ClientApi/UpdateClient?Id=" + clientIdUpdate,
+            "http://localhost:5029/api/ClientApi/UpdateClient?Id=" + id,
             {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
                 },
+
                 body: JSON.stringify(dataToSend)
             }
         );
 
         setClientName('');
         setResidency('');
+
         getClients();
         makeUpdateModalAppear();
     }
@@ -99,13 +106,16 @@ const Clients = () => {
                 method: "DELETE",
             }
         );
+
         getClients();
     }
 
+    // update browser in case of database updates
     useEffect(() => {
         getClients();
     }, []);
 
+    // if the browser is still loading data
     if (loading) return <center><h1>Loading</h1></center>
 
     return (
@@ -140,26 +150,25 @@ const Clients = () => {
                     Update Client Info
                 </Modal.Header>
                 <Modal.Body>
-
                     <label htmlFor="id">Id:</label>
                     <input type="text"
-                        value={clientIdUpdate}
-                        onChange={(e) => setClientIdUpdate(e.target.value)}
+                        value={id}
+                        onChange={(e) => setId(e.target.value)}
                         id="id"
-                        readOnly // Make the ID field read-only
+                        readOnly
                     />
 
                     <label htmlFor="name">Name:</label>
                     <input type="text"
-                        value={clientNameUpdate}
-                        onChange={(e) => setClientNameUpdate(e.target.value)}
+                        value={clientName}
+                        onChange={(e) => setClientName(e.target.value)}
                         id="name"
                     />
 
                     <label htmlFor="residency">Residency:</label>
                     <input type="text"
-                        value={residencyUpdate}
-                        onChange={(e) => setResidencyUpdate(e.target.value)}
+                        value={residency}
+                        onChange={(e) => setResidency(e.target.value)}
                     />
                 </Modal.Body>
                 <Modal.Footer>
@@ -168,16 +177,22 @@ const Clients = () => {
             </Modal>
 
             <div className="container mt-5">
+
+                {/* Show Add Client Modal */}
                 <Button
                     className='mb-2'
                     onClick={makeAddModalAppear}
                 >Add New Client</Button>
+
+                {/* Display All Client Data */}
                 <ul>
                     {
                         clients.map((c) =>
                             <li key={c.id} >{c.clientName} || {c.residency}
+                                {/* Delete Client */}
                                 <Button onClick={() => deleteClient(c.id)}>Delete</Button>
-                                <Button onClick={() => {getClient(c.id); makeUpdateModalAppear()}}>Update</Button>
+                                {/* Update Client */}
+                                <Button onClick={() => {getClient(c.id); makeUpdateModalAppear()}}>Update</Button>  
                             </li>
                         )
                     }
