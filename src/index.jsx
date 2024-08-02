@@ -73,7 +73,7 @@ const Clients = () => {
     }
 
     // Update Client
-    const updateClient = async () => { // Changed function name to lowercase
+    const updateClient = async () => {
         const dataToSend = {
             "clientName": clientName,
             "residency": residency,
@@ -99,7 +99,7 @@ const Clients = () => {
     }
 
     // Delete Client
-    const deleteClient = async (id) => { // Changed function name to lowercase
+    const deleteClient = async (id) => {
         const response = await fetch(
             "http://localhost:5029/api/ClientApi/DeleteClient?Id=" + id,
             {
@@ -192,7 +192,7 @@ const Clients = () => {
                                 {/* Delete Client */}
                                 <Button onClick={() => deleteClient(c.id)}>Delete</Button>
                                 {/* Update Client */}
-                                <Button onClick={() => {getClient(c.id); makeUpdateModalAppear()}}>Update</Button>  
+                                <Button onClick={() => {getClient(c.id); makeUpdateModalAppear()}}>Update</Button>  {/* Show Update Modal */}
                             </li>
                         )
                     }
