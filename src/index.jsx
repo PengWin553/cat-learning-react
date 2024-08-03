@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Modal } from 'react-bootstrap';
+import {Toaster, toast} from 'sonner';
 
 const Clients = () => {
 
@@ -65,11 +66,15 @@ const Clients = () => {
             }
         );
 
-        setClientName('');
-        setResidency('');
-
-        getClients();
-        makeAddModalAppear();
+        if(response.ok){
+            await getClients();
+            makeAddModalAppear();
+            setClientName('');
+            setResidency('');
+            toast.success('Client saved successfully');
+        }else{
+            toast.error('Failed to save client');
+        }
     }
 
     // Update Client
@@ -91,25 +96,37 @@ const Clients = () => {
             }
         );
 
-        setClientName('');
-        setResidency('');
+        if(response.ok){
+            await getClients();
+            makeUpdateModalAppear();
+            setClientName('');
+            setResidency('');
+            toast.success('Client updated successfully');
+        }else{
+            toast.error('Failed to save client');
+        }
 
-        getClients();
-        makeUpdateModalAppear();
     }
 
     // Delete Client
     const deleteClient = async (id) => {
-        const response = await fetch(
-            "http://localhost:5029/api/ClientApi/DeleteClient?Id=" + id,
-            {
-                method: "DELETE",
+        if (confirm("Are you sure you want to delete this?") == true) {
+            const response = await fetch(
+                "http://localhost:5029/api/ClientApi/DeleteClient?Id=" + id,
+                {
+                    method: "DELETE",
+                }
+            );
+
+            if(response.ok){
+                await getClients();
+                toast.success('Client deleted successfully');
+            }else{
+                toast.error('Failed to delete client');
             }
-        );
-
-        getClients();
+        }
     }
-
+  
     // update browser in case of database updates
     useEffect(() => {
         getClients();
@@ -205,13 +222,15 @@ const Clients = () => {
                                 <td>{c.residency}</td>
                                 <td className='action-btn-container-display'>
                                     <button className="action-btn row-btn update-client-btn" onClick={() => {getClient(c.id); makeUpdateModalAppear()}}>Update</button>  {/* Show Update Modal */}
-                                    <button className="action-btn row-btn delete-client-btn" onClick={() => deleteClient(c.id)}>Delete</button>
+                                    <button className="action-btn row-btn delete-client-btn" onClick={() => {deleteClient(c.id)}}>Delete</button>
                                 </td>
                             </tr>
                         )}
                     </tbody>
                 </table>
             </div>
+            
+            <Toaster expand={true} richColors position='bottom-right' className='mr-8'></Toaster>
         </>
     );
 }
