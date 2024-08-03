@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 
 const Clients = () => {
 
@@ -123,7 +123,7 @@ const Clients = () => {
             {/* Add Client */}
             <Modal show={showAddModal} onHide={makeAddModalAppear}>
                 <Modal.Header closeButton>
-                    New Client Info
+                    <b className='bold-color'>New Client Info</b>
                 </Modal.Header>
                 <Modal.Body>
                     <label htmlFor="name">Name:</label>
@@ -131,27 +131,29 @@ const Clients = () => {
                         value={clientName}
                         onChange={(e) => setClientName(e.target.value)}
                         id="name"
+                        placeholder='Enter client name'
                     />
 
                     <label htmlFor="residency">Residency:</label>
                     <input type="text"
                         value={residency}
                         onChange={(e) => setResidency(e.target.value)}
+                        placeholder='Enter residency'
                     />
                 </Modal.Body>
-                <Modal.Footer>
-                    <Button onClick={saveClient}>Save Client</Button>
+                <Modal.Footer className="modal-footer">
+                    <button onClick={saveClient} className="action-btn modal-btn">Save Client</button>
                 </Modal.Footer>
             </Modal>
 
             {/* Update Client */}
             <Modal show={showUpdateModal} onHide={makeUpdateModalAppear}>
                 <Modal.Header closeButton>
-                    Update Client Info
+                    <b className='bold-color'>Update Client Info</b>
                 </Modal.Header>
                 <Modal.Body>
-                    <label htmlFor="id">Id:</label>
-                    <input type="text"
+                    {/* <label htmlFor="id">Id:</label> */}
+                    <input type="hidden"
                         value={id}
                         onChange={(e) => setId(e.target.value)}
                         id="id"
@@ -172,31 +174,43 @@ const Clients = () => {
                     />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={updateClient}>Update Client</Button>
+                    <button onClick={updateClient} className="action-btn modal-btn" >Update Client</button>
                 </Modal.Footer>
             </Modal>
 
-            <div className="container mt-5">
+            {/* title */}
+            <h3 class="title">CRUD With C# API</h3> 
 
-                {/* Show Add Client Modal */}
-                <Button
-                    className='mb-2'
-                    onClick={makeAddModalAppear}
-                >Add New Client</Button>
+            {/* Show Add Client Modal */}
+            <div className="add-client-btn-container">
+                <button className="action-btn add-client-btn" onClick={makeAddModalAppear} >Add New Client</button>
+            </div>
 
-                {/* Display All Client Data */}
-                <ul>
-                    {
-                        clients.map((c) =>
-                            <li key={c.id} >{c.clientName} || {c.residency}
-                                {/* Delete Client */}
-                                <Button onClick={() => deleteClient(c.id)}>Delete</Button>
-                                {/* Update Client */}
-                                <Button onClick={() => {getClient(c.id); makeUpdateModalAppear()}}>Update</Button>  {/* Show Update Modal */}
-                            </li>
-                        )
-                    }
-                </ul>
+            {/* Display All Client Data */}
+            <div className="fixTableHead">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Residency</th>
+                            <th className='action-btn-row-container'>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {clients.map((c) => 
+                            <tr key={c.id}>
+                                <td>{c.id}</td>
+                                <td>{c.clientName}</td>
+                                <td>{c.residency}</td>
+                                <td className='action-btn-container-display'>
+                                    <button className="action-btn row-btn update-client-btn" onClick={() => {getClient(c.id); makeUpdateModalAppear()}}>Update</button>  {/* Show Update Modal */}
+                                    <button className="action-btn row-btn delete-client-btn" onClick={() => deleteClient(c.id)}>Delete</button>
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
             </div>
         </>
     );
