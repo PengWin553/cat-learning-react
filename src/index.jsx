@@ -1,26 +1,30 @@
 import { useState, useEffect } from 'react';
-import { Button, Modal } from 'react-bootstrap';
-import { Toaster, toast } from 'sonner';
+import { Modal } from 'react-bootstrap';
+import {Toaster, toast} from 'sonner';
+
+// import ClientAddModal
+import ClientAddModal from './ClientAddModal.jsx';
 
 const Clients = () => {
-    // get clients
-    const [clients, setClients] = useState([]);
+
+    // get Clients to display
+    const [clients, setClients] = useState([]); 
 
     // set loading...
     const [loading, setLoading] = useState(true);
 
-    // add client modal
+    // Handle individual variables
+    const [id, setId] = useState("");
+    const [clientName, setClientName] = useState(""); 
+    const [residency, setResidency] = useState("");
+
+    // Add Modal
     const [showAddModal, setShowAddModal] = useState(false); 
     const makeAddModalAppear = () => setShowAddModal(!showAddModal); 
 
-    // update client modal
+    // Update Modal
     const [showUpdateModal, setShowUpdateModal] = useState(false); 
     const makeUpdateModalAppear = () => setShowUpdateModal(!showUpdateModal); 
-
-    // handle client table's variables
-    const [clientName, setClientName] = useState(""); 
-    const [id, setId] = useState(0) 
-    const [residency, setResidency] = useState(""); 
 
     // Fetch Clients
     const getClients = async () => {
@@ -29,6 +33,20 @@ const Clients = () => {
         );
         const result = await response.json();
         setClients(result);
+        setLoading(false);
+    }
+
+    // Fetch Client
+    const getClient = async (id) => {
+        const response = await fetch(
+            "http://localhost:5029/api/ClientApi/GetClient?id="+id,
+        );
+
+        const result = await response.json();
+        setId(result.id);
+        setClientName(result.clientName);
+        setResidency(result.residency);
+
         setLoading(false);
     }
 
@@ -46,6 +64,7 @@ const Clients = () => {
                 headers: {
                     "Content-Type": "application/json"
                 },
+
                 body: JSON.stringify(dataToSend)
             }
         );
@@ -61,14 +80,8 @@ const Clients = () => {
         }
     }
 
-    const handleToUpdate = (id, clientName, residency) => {
-        setId(id);
-        setClientName(clientName);
-        setResidency(residency);
-    };
-
     // Update Client
-    const updateClient = async () => { // Changed function name to lowercase
+    const updateClient = async () => {
         const dataToSend = {
             "clientName": clientName,
             "residency": residency,
@@ -81,6 +94,7 @@ const Clients = () => {
                 headers: {
                     "Content-Type": "application/json"
                 },
+
                 body: JSON.stringify(dataToSend)
             }
         );
@@ -94,6 +108,7 @@ const Clients = () => {
         }else{
             toast.error('Failed to save client');
         }
+
     }
 
     // Delete Client
@@ -114,38 +129,32 @@ const Clients = () => {
             }
         }
     }
-
+  
+    // update browser in case of database updates
     useEffect(() => {
         getClients();
     }, []);
 
+    // if the browser is still loading data
     if (loading) return <center><h1>Loading</h1></center>
 
     return (
         <>
             {/* Add Client */}
-            <Modal show={showAddModal} onHide={makeAddModalAppear}>
-                <Modal.Header closeButton>
-                    <b className='bold-color'>New Client Info</b>
-                </Modal.Header>
-                <Modal.Body>
-                    <label htmlFor="name">Name:</label>
-                    <input type="text"
-                        value={clientName}
-                        onChange={(e) => setClientName(e.target.value)}
-                        id="name"
-                    />
 
-                    <label htmlFor="residency">Residency:</label>
-                    <input type="text"
-                        value={residency}
-                        onChange={(e) => setResidency(e.target.value)}
-                    />
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button onClick={saveClient}>Save Client</Button>
-                </Modal.Footer>
-            </Modal>
+            {/* pass parameters: */}
+            <ClientAddModal
+                // handle modal
+                showAddModal={showAddModal}
+                makeAddModalAppear={makeAddModalAppear}
+                // handle variables
+                clientName={clientName}
+                setClientName={setClientName}
+                residency={residency}
+                setResidency={setResidency}
+                // handle saveClient function
+                saveClient={saveClient}
+            />
 
             {/* Update Client */}
             <Modal show={showUpdateModal} onHide={makeUpdateModalAppear}>
@@ -175,7 +184,7 @@ const Clients = () => {
                     />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={updateClient}>Update Client</Button>
+                    <button onClick={updateClient} className="action-btn modal-btn" >Update Client</button>
                 </Modal.Footer>
             </Modal>
 
@@ -184,7 +193,7 @@ const Clients = () => {
 
             {/* Show Add Client Modal */}
             <div className="add-client-btn-container">
-                <button className="action-btn add-client-btn" onClick={makeAddModalAppear}>Add New Client</button>
+                <button className="action-btn add-client-btn" onClick={makeAddModalAppear} >Add New Client</button>
             </div>
 
             {/* Display All Client Data */}
@@ -205,7 +214,7 @@ const Clients = () => {
                                 <td>{c.clientName}</td>
                                 <td>{c.residency}</td>
                                 <td className='action-btn-container-display'>
-                                    <button className="action-btn row-btn update-client-btn" onClick={() => {handleToUpdate(c.id, c.clientName, c.residency); makeUpdateModalAppear();}}>Update</button>  {/* Show Update Modal */}
+                                    <button className="action-btn row-btn update-client-btn" onClick={() => {getClient(c.id); makeUpdateModalAppear()}}>Update</button>  {/* Show Update Modal */}
                                     <button className="action-btn row-btn delete-client-btn" onClick={() => {deleteClient(c.id)}}>Delete</button>
                                 </td>
                             </tr>
@@ -213,9 +222,8 @@ const Clients = () => {
                     </tbody>
                 </table>
             </div>
-
+            
             <Toaster expand={true} richColors position='bottom-right' className='mr-8'></Toaster>
-
         </>
     );
 }
