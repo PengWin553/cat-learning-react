@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Modal } from 'react-bootstrap';
 import { Toaster, toast } from 'sonner';
 
 // import ClientAddModal
@@ -7,6 +6,9 @@ import ClientAddModal from './ClientAddModal.jsx';
 
 // import ClientUpdateModal
 import ClientUpdateModal from './ClientUpdateModal.jsx';
+
+// import ClientDeleteModal
+import ClientDeleteModal from './ClientDeleteModal.jsx';
 
 const Clients = () => {
 
@@ -118,21 +120,21 @@ const Clients = () => {
 
     // Delete Client
     const deleteClient = async (id) => {
-        if (window.confirm("Are you sure you want to delete this?")) {
-            const response = await fetch(
-                "http://localhost:5029/api/ClientApi/DeleteClient?Id=" + id,
-                {
-                    method: "DELETE",
-                }
-            );
-
-            if (response.ok) {
-                await getClients();
-                makeDeleteModalAppear(); // Hide the delete modal after deleting
-                toast.success('Client deleted successfully');
-            } else {
-                toast.error('Failed to delete client');
+        const response = await fetch(
+            "http://localhost:5029/api/ClientApi/DeleteClient?Id=" + id,
+            {
+                method: "DELETE",
             }
+        );
+
+        if (response.ok) {
+            await getClients();
+            makeDeleteModalAppear();
+            setClientName('');
+            setResidency('');
+            toast.success('Client deleted successfully');
+        } else {
+            toast.error('Failed to delete client');
         }
     }
 
@@ -171,30 +173,15 @@ const Clients = () => {
             />
 
             {/* Delete Client */}
-            <Modal show={showDeleteModal} onHide={makeDeleteModalAppear}>
-                <Modal.Header closeButton>
-                    <b className='bold-color'>Delete Client Info</b>
-                </Modal.Header>
-                <Modal.Body>
-                    <label htmlFor="name">Name:</label>
-                    <input type="text"
-                        value={clientName}
-                        readOnly
-                        id="name"
-                    />
-
-                    <label htmlFor="residency">Residency:</label>
-                    <input type="text"
-                        value={residency}
-                        readOnly
-                        id="residency"
-                    />
-                </Modal.Body>
-                <Modal.Footer>
-                    <button onClick={() => deleteClient(id)} className="action-btn modal-btn">Delete Client</button>
-                </Modal.Footer>
-            </Modal>
-
+            <ClientDeleteModal
+                showDeleteModal={showDeleteModal}
+                makeDeleteModalAppear={makeDeleteModalAppear}
+                id={id}
+                clientName={clientName}
+                residency={residency}
+                deleteClient={deleteClient}
+            />
+           
             <h3 className="title">CRUD With C# API</h3>
 
             {/* Show Add Client Modal */}
@@ -228,7 +215,6 @@ const Clients = () => {
                     </tbody>
                 </table>
             </div>
-
             <Toaster expand={true} richColors position='bottom-right' className='mr-8'></Toaster>
         </>
     );

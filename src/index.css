@@ -218,6 +218,19 @@ tr .action-btn{
   background-color: #f64f4f;
 }
 
+.add-client-btn:hover{
+  color: white;
+  background-color:#1f79a7;
+}
+
+.update-client-btn:hover{
+  background-color:#dea232;
+}
+
+.delete-client-btn:hover{
+  background-color: #e44a4a;
+}
+
 .title{
   padding: 15px;
   text-align: center;
@@ -247,4 +260,19 @@ tr .action-btn{
 
 .bold-color{
   color: #707070;
+}
+
+.delete-modal-title{
+  text-align: center;
+  color: #f64f4f;
+}
+
+.delete-data-text{
+  font-size: 16px;
+  color: #707070;
+}
+
+.delete-label-styles{
+  font-size: 17px;
+  color: rgb(73, 72, 72);
 }
