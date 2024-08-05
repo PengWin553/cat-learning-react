@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Modal } from 'react-bootstrap';
-import {Toaster, toast} from 'sonner';
+import { Toaster, toast } from 'sonner';
 
 // import ClientAddModal
 import ClientAddModal from './ClientAddModal.jsx';
@@ -11,23 +11,27 @@ import ClientUpdateModal from './ClientUpdateModal.jsx';
 const Clients = () => {
 
     // get Clients to display
-    const [clients, setClients] = useState([]); 
+    const [clients, setClients] = useState([]);
 
     // set loading...
     const [loading, setLoading] = useState(true);
 
     // Handle individual variables
     const [id, setId] = useState("");
-    const [clientName, setClientName] = useState(""); 
+    const [clientName, setClientName] = useState("");
     const [residency, setResidency] = useState("");
 
     // Add Modal
-    const [showAddModal, setShowAddModal] = useState(false); 
-    const makeAddModalAppear = () => setShowAddModal(!showAddModal); 
+    const [showAddModal, setShowAddModal] = useState(false);
+    const makeAddModalAppear = () => setShowAddModal(!showAddModal);
 
     // Update Modal
-    const [showUpdateModal, setShowUpdateModal] = useState(false); 
-    const makeUpdateModalAppear = () => setShowUpdateModal(!showUpdateModal); 
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const makeUpdateModalAppear = () => setShowUpdateModal(!showUpdateModal);
+
+    // Delete Modal
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const makeDeleteModalAppear = () => setShowDeleteModal(!showDeleteModal);
 
     // Fetch Clients
     const getClients = async () => {
@@ -42,7 +46,7 @@ const Clients = () => {
     // Fetch Client
     const getClient = async (id) => {
         const response = await fetch(
-            "http://localhost:5029/api/ClientApi/GetClient?id="+id,
+            "http://localhost:5029/api/ClientApi/GetClient?id=" + id,
         );
 
         const result = await response.json();
@@ -67,18 +71,17 @@ const Clients = () => {
                 headers: {
                     "Content-Type": "application/json"
                 },
-
                 body: JSON.stringify(dataToSend)
             }
         );
 
-        if(response.ok){
+        if (response.ok) {
             await getClients();
             makeAddModalAppear();
             setClientName('');
             setResidency('');
             toast.success('Client saved successfully');
-        }else{
+        } else {
             toast.error('Failed to save client');
         }
     }
@@ -97,18 +100,17 @@ const Clients = () => {
                 headers: {
                     "Content-Type": "application/json"
                 },
-
                 body: JSON.stringify(dataToSend)
             }
         );
 
-        if(response.ok){
+        if (response.ok) {
             await getClients();
             makeUpdateModalAppear();
             setClientName('');
             setResidency('');
             toast.success('Client updated successfully');
-        }else{
+        } else {
             toast.error('Failed to save client');
         }
 
@@ -116,7 +118,7 @@ const Clients = () => {
 
     // Delete Client
     const deleteClient = async (id) => {
-        if (confirm("Are you sure you want to delete this?") == true) {
+        if (window.confirm("Are you sure you want to delete this?")) {
             const response = await fetch(
                 "http://localhost:5029/api/ClientApi/DeleteClient?Id=" + id,
                 {
@@ -124,15 +126,16 @@ const Clients = () => {
                 }
             );
 
-            if(response.ok){
+            if (response.ok) {
                 await getClients();
+                makeDeleteModalAppear(); // Hide the delete modal after deleting
                 toast.success('Client deleted successfully');
-            }else{
+            } else {
                 toast.error('Failed to delete client');
             }
         }
     }
-  
+
     // update browser in case of database updates
     useEffect(() => {
         getClients();
@@ -144,40 +147,59 @@ const Clients = () => {
     return (
         <>
             {/* Add Client */}
-            {/* pass parameters: */}
             <ClientAddModal
-                // handle modal
                 showAddModal={showAddModal}
                 makeAddModalAppear={makeAddModalAppear}
-                // handle variables
                 clientName={clientName}
                 setClientName={setClientName}
                 residency={residency}
                 setResidency={setResidency}
-                // handle saveClient function
                 saveClient={saveClient}
             />
 
             {/* Update Client */}
-            {/* pass parameters: */}
             <ClientUpdateModal
-               showUpdateModal={showUpdateModal}
-               makeUpdateModalAppear={makeUpdateModalAppear}
-               id={id}
-               clientName={clientName}
-               residency={residency}
-               setResidency={setResidency}
-               setClientName={setClientName}
-               setId={setId}
-               updateClient={updateClient}
+                showUpdateModal={showUpdateModal}
+                makeUpdateModalAppear={makeUpdateModalAppear}
+                id={id}
+                clientName={clientName}
+                residency={residency}
+                setResidency={setResidency}
+                setClientName={setClientName}
+                setId={setId}
+                updateClient={updateClient}
             />
 
-            {/* title */}
-            <h3 class="title">CRUD With C# API</h3> 
+            {/* Delete Client */}
+            <Modal show={showDeleteModal} onHide={makeDeleteModalAppear}>
+                <Modal.Header closeButton>
+                    <b className='bold-color'>Delete Client Info</b>
+                </Modal.Header>
+                <Modal.Body>
+                    <label htmlFor="name">Name:</label>
+                    <input type="text"
+                        value={clientName}
+                        readOnly
+                        id="name"
+                    />
+
+                    <label htmlFor="residency">Residency:</label>
+                    <input type="text"
+                        value={residency}
+                        readOnly
+                        id="residency"
+                    />
+                </Modal.Body>
+                <Modal.Footer>
+                    <button onClick={() => deleteClient(id)} className="action-btn modal-btn">Delete Client</button>
+                </Modal.Footer>
+            </Modal>
+
+            <h3 className="title">CRUD With C# API</h3>
 
             {/* Show Add Client Modal */}
             <div className="add-client-btn-container">
-                <button className="action-btn add-client-btn" onClick={makeAddModalAppear} >Add New Client</button>
+                <button className="action-btn add-client-btn" onClick={makeAddModalAppear}>Add New Client</button>
             </div>
 
             {/* Display All Client Data */}
@@ -192,21 +214,21 @@ const Clients = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {clients.map((c) => 
+                        {clients.map((c) =>
                             <tr key={c.id}>
                                 <td>{c.id}</td>
                                 <td>{c.clientName}</td>
                                 <td>{c.residency}</td>
                                 <td className='action-btn-container-display'>
-                                    <button className="action-btn row-btn update-client-btn" onClick={() => {getClient(c.id); makeUpdateModalAppear()}}>Update</button>  {/* Show Update Modal */}
-                                    <button className="action-btn row-btn delete-client-btn" onClick={() => {deleteClient(c.id)}}>Delete</button>
+                                    <button className="action-btn row-btn update-client-btn" onClick={() => { getClient(c.id); makeUpdateModalAppear() }}>Update</button>
+                                    <button className="action-btn row-btn delete-client-btn" onClick={() => { getClient(c.id); makeDeleteModalAppear() }}>Delete</button>
                                 </td>
                             </tr>
                         )}
                     </tbody>
                 </table>
             </div>
-            
+
             <Toaster expand={true} richColors position='bottom-right' className='mr-8'></Toaster>
         </>
     );
