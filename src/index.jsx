@@ -5,6 +5,9 @@ import {Toaster, toast} from 'sonner';
 // import ClientAddModal
 import ClientAddModal from './ClientAddModal.jsx';
 
+// import ClientUpdateModal
+import ClientUpdateModal from './ClientUpdateModal.jsx';
+
 const Clients = () => {
 
     // get Clients to display
@@ -141,7 +144,6 @@ const Clients = () => {
     return (
         <>
             {/* Add Client */}
-
             {/* pass parameters: */}
             <ClientAddModal
                 // handle modal
@@ -157,36 +159,18 @@ const Clients = () => {
             />
 
             {/* Update Client */}
-            <Modal show={showUpdateModal} onHide={makeUpdateModalAppear}>
-                <Modal.Header closeButton>
-                    <b className='bold-color'>Update Client Info</b>
-                </Modal.Header>
-                <Modal.Body>
-                    {/* <label htmlFor="id">Id:</label> */}
-                    <input type="hidden"
-                        value={id}
-                        onChange={(e) => setId(e.target.value)}
-                        id="id"
-                        readOnly
-                    />
-
-                    <label htmlFor="name">Name:</label>
-                    <input type="text"
-                        value={clientName}
-                        onChange={(e) => setClientName(e.target.value)}
-                        id="name"
-                    />
-
-                    <label htmlFor="residency">Residency:</label>
-                    <input type="text"
-                        value={residency}
-                        onChange={(e) => setResidency(e.target.value)}
-                    />
-                </Modal.Body>
-                <Modal.Footer>
-                    <button onClick={updateClient} className="action-btn modal-btn" >Update Client</button>
-                </Modal.Footer>
-            </Modal>
+            {/* pass parameters: */}
+            <ClientUpdateModal
+               showUpdateModal={showUpdateModal}
+               makeUpdateModalAppear={makeUpdateModalAppear}
+               id={id}
+               clientName={clientName}
+               residency={residency}
+               setResidency={setResidency}
+               setClientName={setClientName}
+               setId={setId}
+               updateClient={updateClient}
+            />
 
             {/* title */}
             <h3 class="title">CRUD With C# API</h3> 
