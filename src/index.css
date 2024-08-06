@@ -29,7 +29,7 @@ body, #root {
 }
 
 /* ?? */
-.home-container {
+.content-container {
   background: #e2e1e3;
   flex-grow: 1; 
   overflow-y: auto;

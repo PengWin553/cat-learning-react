@@ -1,16 +1,33 @@
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import Home from './Home.jsx';
+import Categories from './Categories.jsx';
 import NavigationBar from './Navbar.jsx';
 
 function App() {
   return (
-    <div className="app-container">
-      <div className="navbar-container">
-        <NavigationBar />
+    <Router>
+      <div className="app-container">
+        <div className="navbar-container">
+          <NavigationBar />
+        </div>
+
+        <div className="content-container">
+          <Switch>
+
+            {/* homePage */}
+            <Route exact path='/home'>
+              <Home />
+            </Route>
+
+            {/* categoriesPage */}
+            <Route path='/categories'>
+              <Categories />
+            </Route>
+            
+          </Switch>
+        </div>
       </div>
-      <div className="home-container">
-        <Home />
-      </div>
-    </div>
+    </Router>
   )
 }
 

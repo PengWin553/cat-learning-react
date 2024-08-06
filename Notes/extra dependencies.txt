@@ -1,0 +1,5 @@
+React Bootsrap:
+npm i bootstrap react-bootstrap
+
+React Router:
+npm i react-router-dom@5
