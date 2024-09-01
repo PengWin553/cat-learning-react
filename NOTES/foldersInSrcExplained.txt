@@ -1,0 +1,4 @@
+pages: the folder in which your root-level pages that a user can go to will live
+    pages/(logged-in): the folder contains pages that are only accessible by logged-in users
+
+components: the folder that holds all of the components that we use when we build our application. (e.g, UI primitives like buttons, text inputs, select inputs, modals, forms, or anything that is small that is not made up of other smaller components)
